@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Pattern/">
+    <Project Path="DemoBuilderPattern/DemoBuilderPattern.csproj" />
+  </Folder>
+  <Folder Name="/PatternApplication/">
+    <Project Path="DemoBuilderPattern.Application/DemoBuilderPattern.Application.csproj" />
+    <Project Path="Tools.Security/Tools.Security.csproj" />
+  </Folder>
+</Solution>
