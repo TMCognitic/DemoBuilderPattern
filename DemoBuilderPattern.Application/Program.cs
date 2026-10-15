@@ -1,8 +1,6 @@
 using Tools.Security;
 
 var builder = WebApplication.CreateBuilder(args);
-
-string policyName = "Corsican Police Department";
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -11,7 +9,7 @@ builder.Services.AddCustomSecurity(o =>
     o.UseCors = true;
     o.AddOrigins("https://localhost:4200", "https://10.0.5.105:4200/");
     o.SetMethods(Verbs.ALL);
-    o.AddHeaders("X-AppId");
+    o.AddHeaders(new HeaderInfo("X-AppId", s => Guid.TryParse(s, out _)));
 });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -26,6 +24,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCustomSecurity();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

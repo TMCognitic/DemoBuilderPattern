@@ -18,6 +18,7 @@ namespace Tools.Security
                     builderOptions(builder);
                 }
 
+                services.AddSingleton<CustomSecurityMiddleware>();
                 services.AddSingleton(builder);
 
                 if(builder.UseCors)
@@ -38,7 +39,7 @@ namespace Tools.Security
 
                             if(builder.Headers.Any())
                             {
-                                b.WithHeaders(builder.Headers.ToArray());
+                                b.WithHeaders(builder.Headers.Select(h => h.HeaderName).ToArray());
                             }
                         });
                     });
@@ -60,6 +61,8 @@ namespace Tools.Security
                 {
                     if(securityOptionsBuilder.UseCors)
                         application.UseCors(securityOptionsBuilder.PolicyName);
+
+                    application.UseMiddleware<CustomSecurityMiddleware>();
                 }
 
                 return application;

@@ -9,7 +9,7 @@ namespace Tools.Security
         public string PolicyName { get; set; } = "Corsican Police Department";
         internal IList<string> Origins { get; } = new List<string>();
         internal IList<string> Methods { get; } = new List<string>();
-        internal IList<string> Headers { get; } = new List<string>();
+        internal IList<HeaderInfo> Headers { get; } = new List<HeaderInfo>();
         public bool UseCors { get; set; } = false;
 
         public void AddOrigins(params string[] origins)
@@ -20,13 +20,11 @@ namespace Tools.Security
             foreach (string origin in origins)
             {
                 string currentOrigin = origin;
-                Uri uri = new Uri(currentOrigin); //<-- il n'est qu'à des fins de validations
-
-                if (currentOrigin.EndsWith("//"))
-                    throw new InvalidOperationException($"The origin '{origin}' is invalid");
 
                 if (currentOrigin.EndsWith("/"))
-                    currentOrigin = currentOrigin.Substring(0, currentOrigin.Length - 1);
+                    currentOrigin = currentOrigin.TrimEnd('/');
+
+                Uri uri = new Uri(currentOrigin); //<-- il n'est qu'à des fins de validations et récupération du Scheme
 
                 if(uri.Scheme is "http" or "https")
                 {
@@ -47,11 +45,11 @@ namespace Tools.Security
             }
         }
 
-        public void AddHeaders(params string[] headers)
+        public void AddHeaders(params HeaderInfo[] headers)
         {
-            foreach(string header in headers)
+            foreach(HeaderInfo header in headers)
             {
-                if(!Regex.IsMatch(header, HeaderRegexPattern))
+                if(!Regex.IsMatch(header.HeaderName, HeaderRegexPattern))
                 {
                     throw new InvalidOperationException($"The header '{header}' is invalid!");
                 }
